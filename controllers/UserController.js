@@ -34,7 +34,8 @@ exports.post_SignUp = [
     if (!errors.isEmpty()) {
       res.status(220).json(JSON.stringify(errors));
     } else {
-      User.findOne({ username: req.body.username }).then(foundUser => {
+      const username_low = req.body.username.toLowerCase();
+      User.findOne({ username_lower: username_low }).then(foundUser => {
         if (foundUser) {
           res.status(220).json({
             message: "There's already a user with the same username."
@@ -44,7 +45,8 @@ exports.post_SignUp = [
             const user = new User({
               username: req.body.username,
               email: req.body.email,
-              password: hashedpassword
+              password: hashedpassword,
+              username_lower: username_low
             });
             user.save().then(user => {
               res.status(200).json({
@@ -61,7 +63,8 @@ exports.post_SignUp = [
 
 exports.post_LogIn = (req, res, next) => {
   let user = null;
-  User.findOne({ username: req.body.username })
+  const username_low = req.body.username.toLowerCase();
+  User.findOne({ username_lower: username_low })
     .then(foundUser => {
       if (!foundUser) {
         const error = new Error("No user with that username");
