@@ -8,6 +8,7 @@ const app = express();
 
 const userRouter = require("./routes/user");
 const saveRouter = require("./routes/save");
+const APIRouter = require("./routes/API");
 
 var mongoose = require('mongoose');
 mongoose.connect(process.env.DB_CONNECT, { useNewUrlParser: true });
@@ -27,4 +28,5 @@ app.use((req, res, next) => {
 
 app.use("/users", userRouter);
 app.use("/save", saveRouter);
+app.use("/API", APIRouter)
 app.listen(PORT);

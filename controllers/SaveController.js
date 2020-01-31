@@ -1,5 +1,4 @@
 const Save = require("../models/Save");
-const User = require("../models/User");
 const jwt = require("jsonwebtoken");
 
 exports.post_save = (req, res, next) => {
