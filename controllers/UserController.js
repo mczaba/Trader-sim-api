@@ -50,8 +50,7 @@ exports.post_SignUp = [
             });
             user.save().then(user => {
               res.status(200).json({
-                message:
-                  "Success"
+                message: "Success"
               });
             });
           });
@@ -83,7 +82,6 @@ exports.post_LogIn = (req, res, next) => {
         error.tosend = "Wrong password";
         throw error;
       }
-      console.log("logged in");
       const token = jwt.sign(
         {
           username: user.username,
@@ -92,9 +90,35 @@ exports.post_LogIn = (req, res, next) => {
         "11051990",
         { expiresIn: "24h" }
       );
-      res.status(200).json({ token: token, username: user.username, id: user._id });
+      res
+        .status(200)
+        .json({ token: token, username: user.username, id: user._id });
     })
     .catch(err => {
-      res.status(err.statusCode || 500).json({ message: err.tosend || 'Internal Server Error' });;
+      res
+        .status(err.statusCode || 500)
+        .json({ message: err.tosend || "Internal Server Error" });
     });
+};
+
+exports.get_refresh = (req, res, next) => {
+  const token = req.headers.authorization.split(" ")[1];
+  const decodedToken = jwt.verify(token, "11051990");
+  if (!decodedToken) {
+    res.status(err.statusCode || 500).json({ message: "Unauthorized" });
+  } else {
+    const username = decodedToken.username;
+    const id = decodedToken.id
+    const token = jwt.sign(
+      {
+        username: username,
+        id: id
+      },
+      "11051990",
+      { expiresIn: "24h" }
+    );
+    res
+      .status(200)
+      .json({ token: token, username: username });
+  }
 };
